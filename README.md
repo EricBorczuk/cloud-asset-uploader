@@ -9,6 +9,8 @@ A server that allows a client to:
 
 The service runs with python 3.7. All of the instructions below assume that you have python 3.7 installed, and that running `python` in your shell refers to that install.
 
+The service also requires that you have PostgreSQL 10 installed. A simple way to get this install for Mac is to follow the steps at https://postgresapp.com/ (Choose the download option that reads `Postgres.app with PostgreSQL 10, 11 and 12`).
+
 1) To get started, be sure to install pip (for python 3) by executing in a shell:
 `curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py`
 `python get-pip.py`
@@ -27,5 +29,9 @@ The service runs with python 3.7. All of the instructions below assume that you 
 `export AWS_ACCESS_KEY_ID=???`
 `export AWS_SECRET_ACCESS_KEY=???`
 
-7) Run the server.
+7) The server also relies on an env variable for the connection string to your PostgreSQL instance. Set that up:
+`export POSTGRESQL_URL=???`
+
+8) Run the server:
+`python cloud_asset_server.py`
 
