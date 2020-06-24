@@ -1,5 +1,5 @@
 import cherrypy
-
+from database.database_accessor import DatabaseAccessor
 from endpoints.upload_asset import UploadAssetEndpoint
 from endpoints.complete_upload import CompleteUploadAssetEndpoint
 from endpoints.access_asset import AccessAssetEndpoint
@@ -26,13 +26,15 @@ if __name__ == '__main__':
         }
     }
     service = CloudAssetManagerServer()
-
-    # Three endpoints, defined here:
-    # /api/upload
-    # /api/complete
-    # /api/access
-    service.upload = UploadAssetEndpoint()
-    service.complete = CompleteUploadAssetEndpoint()
-    service.access = AccessAssetEndpoint()
-    
-    cherrypy.quickstart(service, '/api', conf)
+    DatabaseAccessor.connect()
+    try:
+        # Three endpoints, defined here:
+        # /api/upload
+        # /api/complete
+        # /api/access
+        service.upload = UploadAssetEndpoint()
+        service.complete = CompleteUploadAssetEndpoint()
+        service.access = AccessAssetEndpoint()
+        cherrypy.quickstart(service, '/api', conf)
+    finally:
+        DatabaseAccessor.connection.close()

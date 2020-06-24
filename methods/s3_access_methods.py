@@ -1,6 +1,12 @@
+from datetime import datetime
 from external_services.s3_service import (
-    S3Service, S3ClientMethod, S3ServiceException, S3ServiceInvalidArgsException
+    S3Service,
+    S3ClientMethod,
+    S3ServiceException,
+    S3ServiceInvalidArgsException,
+    DEFAULT_BUCKET
 )
+from database.asset_dao import AssetDao, AssetRow, UploadedStatus
 
 """
 Here lies all actions that our endpoints carry out.
@@ -16,14 +22,12 @@ def _check_valid_upload_request(upload_request):
 
     if object_key is None:
         raise UploadInvalidArgsException('Missing key: object_key')
-    if expiration is None:
-        raise UploadInvalidArgsException('Missing key: expiration')
     if not isinstance(object_key, str):
         raise UploadInvalidArgsException(f'Invalid key: object_key, Value: {object_key} is not a string')
-    if not isinstance(expiration, int):
+    if expiration is not None and not isinstance(expiration, int):
         raise UploadInvalidArgsException(f'Invalid key: expiration, Value: {object_key} is not an int')
 
-def initiate_upload(upload_request):
+def initiate_upload(upload_request, cursor):
     """
     Creates a signed URL for a put_object operation.
     Should the URL signing succeed, a row is also written to the `assets`
@@ -37,12 +41,35 @@ def initiate_upload(upload_request):
     the asset's name and the expiration time of the signed URL.
     """
     _check_valid_upload_request(upload_request)
-    try:
+    object_key = upload_request['object_key']
+    expiration = upload_request.get('expiration')
+
+    existing_asset = AssetDao.get_by_bucket_and_key(
+        DEFAULT_BUCKET,
+        object_key,
+        cursor,
+    )
+
+    if not existing_asset:
+        new_asset = AssetRow(
+            id=None,
+            uploaded_status=UploadedStatus.PENDING.value,
+            bucket=DEFAULT_BUCKET,
+            object_key=object_key,
+            create_date=datetime.utcnow(),
+        )
+        AssetDao.insert_one(new_asset, cursor)
+    elif existing_asset.uploaded_status == UploadedStatus.COMPLETE.value:
+        raise UploadInvalidArgsException('Upload already complete.')
+
+    if expiration:
         return S3Service.create_signed_url(
             S3ClientMethod.PUT_OBJECT,
             upload_request['object_key'],
-            expiration=upload_request['expiration']
+            expiration=expiration,
         )
-    except (S3ServiceException, S3ServiceInvalidArgsException) as e:
-        # rollback
-        raise e
+
+    return S3Service.create_signed_url(
+        S3ClientMethod.PUT_OBJECT,
+        upload_request['object_key'],
+    )
