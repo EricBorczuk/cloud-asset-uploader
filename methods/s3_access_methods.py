@@ -9,7 +9,6 @@ from external_services.s3_service import (
 from database.asset_dao import AssetDao, AssetRow, UploadedStatus
 
 """
-Here lies all actions that our endpoints carry out.
 Functions that live here essentially map to endpoints 1:1.
 """
 

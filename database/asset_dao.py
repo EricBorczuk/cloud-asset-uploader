@@ -74,4 +74,14 @@ class AssetDao:
         )
         result = cursor.fetchone()
         return AssetDao._convert_to_asset_row(result)
+    
+    @staticmethod
+    def update_uploaded_status(asset_id, new_status, cursor):
+        """
+        Updates the asset with id `asset_id` to have the status `new_status`
+        """
+        cursor.execute(
+            'update asset set uploaded_status = %s where id = %s',
+            (new_status, asset_id)
+        )
 

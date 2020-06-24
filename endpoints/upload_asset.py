@@ -1,6 +1,5 @@
 import logging
 import traceback
-import psycopg2
 import cherrypy
 from database.database_accessor import DatabaseAccessor
 from external_services.s3_service import S3ServiceException, S3ServiceInvalidArgsException
