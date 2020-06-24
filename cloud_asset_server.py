@@ -1,22 +1,11 @@
 import cherrypy
 
+from endpoints.upload_asset import UploadAssetEndpoint
+from endpoints.complete_upload import CompleteUploadAssetEndpoint
+from endpoints.access_asset import AccessAssetEndpoint
+
 class CloudAssetManagerServer:
     pass
-
-@cherrypy.expose
-class UploadAssetEndpoint:
-    def POST(self):
-        return b'{"we": "good"}'
-
-@cherrypy.expose
-class CompleteUploadAssetEndpoint:
-    def PUT(self, asset_id):
-        return b'{"we": "bad"}'
-
-@cherrypy.expose
-class AccessAssetEndpoint:
-    def GET(self, asset_id):
-        return f'{{"we": "{asset_id}"}}'.encode()
 
 if __name__ == '__main__':
     conf = {
