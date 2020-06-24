@@ -1,4 +1,11 @@
-from external_services.s3_service import S3Service, S3ClientMethod, S3ServiceException
+from external_services.s3_service import (
+    S3Service, S3ClientMethod, S3ServiceException, S3ServiceInvalidArgsException
+)
+
+"""
+Here lies all actions that our endpoints carry out.
+Functions that live here essentially map to endpoints 1:1.
+"""
 
 def initiate_upload(object_key):
     """
@@ -16,8 +23,7 @@ def initiate_upload(object_key):
         return S3Service.create_signed_url(
             S3ClientMethod.PUT_OBJECT,
             object_key,
-            expiration=1800,
         )
-    except S3ServiceException as e:
+    except (S3ServiceException, S3ServiceInvalidArgsException) as e:
         # rollback
         raise e

@@ -10,6 +10,9 @@ class S3ClientMethod(Enum):
 class S3ServiceException(Exception):
     pass
 
+class S3ServiceInvalidArgsException(Exception):
+    pass
+
 DEFAULT_EXPIRATION = 60 # 1 minute
 MAX_EXPIRATION_TIME = 60 * 30 # 30 minutes
 DEFAULT_BUCKET = 'ericborczuk'
@@ -34,13 +37,13 @@ class S3Service():
         :return: Presigned URL.
         """ 
         if object_key is None:
-            raise S3ServiceException(
+            raise S3ServiceInvalidArgsException(
                 f'Could not create a signed URL for {s3_client_method.value} request: '
                 'object_key is required.'
             )
         
         if expiration > MAX_EXPIRATION_TIME:
-            raise S3ServiceException(
+            raise S3ServiceInvalidArgsException(
                 f'Could not create a signed URL for {s3_client_method.value} request: '
                 'expiration time was too long. Try a shorter duration.'
             )
