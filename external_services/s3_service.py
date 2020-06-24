@@ -67,8 +67,7 @@ class S3Service():
                 return cls.s3_client.generate_presigned_url(
                     s3_client_method.value,
                     Params=params,
-                    ExpiresIn=expiration,
-                    HttpMethod='POST',
+                    ExpiresIn=expiration
                 )
             except ClientError as ce:
                 raise S3ServiceException('Failed to generate signed URL', ce) 

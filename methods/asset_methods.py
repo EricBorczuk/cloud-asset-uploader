@@ -3,7 +3,7 @@ from database.asset_dao import UploadedStatus, AssetDao
 class ChangeUploadStatusInvalidArgsException(Exception):
     pass
 
-class NotFoundException(Exception):
+class AssetNotFoundException(Exception):
     pass
 
 def _check_valid_change_upload_status_request(request):
@@ -35,7 +35,7 @@ def change_asset_upload_status(request, cursor):
     asset = AssetDao.get_by_id(request['asset_id'], cursor)
 
     if not asset:
-        raise NotFoundException(f'Asset with id {request["asset_id"]} not found')
+        raise AssetNotFoundException(f'Asset with id {request["asset_id"]} not found')
     
     AssetDao.update_uploaded_status(request['asset_id'], request['uploaded_status'], cursor)
 
