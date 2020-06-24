@@ -64,8 +64,8 @@ def initiate_upload(upload_request, cursor):
 
     if expiration:
         return {
-            'url': S3Service.create_signed_url(
-                       S3ClientMethod.PUT_OBJECT,
+            'signed_info': S3Service.create_signed_url(
+                       S3ClientMethod.POST_OBJECT,
                        upload_request['object_key'],
                        expiration=expiration,
                    ),
@@ -74,7 +74,7 @@ def initiate_upload(upload_request, cursor):
 
     return {
         'url': S3Service.create_signed_url(
-                   S3ClientMethod.PUT_OBJECT,
+                   S3ClientMethod.POST_OBJECT,
                    upload_request['object_key'],
                ),
         'asset_id': asset.id,

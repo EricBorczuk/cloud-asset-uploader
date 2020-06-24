@@ -5,7 +5,7 @@ from botocore.exceptions import ClientError
 
 class S3ClientMethod(Enum):
     GET_OBJECT = 'get_object'
-    PUT_OBJECT = 'put_object'
+    POST_OBJECT = 'post_object'
 
 class S3ServiceException(Exception):
     pass
@@ -34,7 +34,7 @@ class S3Service():
         :param object_key: The key used in S3 as the name of the asset.
         :param bucket_name: Bucket name in S3.
         :param expiration: Expiration time for the URL, in seconds.  Cannot be more than 30 mins.
-        :return: Presigned URL.
+        :return: signed URL.
         """ 
         if object_key is None:
             raise S3ServiceInvalidArgsException(
@@ -54,13 +54,21 @@ class S3Service():
                     'Bucket': bucket_name,
                     'Key': object_key,
                 }
-                if s3_client_method == S3ClientMethod.PUT_OBJECT:
-                    params['ContentType'] = 'application/octet-stream'
+
+                if s3_client_method == S3ClientMethod.POST_OBJECT:
+                    return cls.s3_client.generate_presigned_post(
+                        bucket_name,
+                        object_key,
+                        Fields={},
+                        Conditions=[],
+                        ExpiresIn=expiration
+                    )
 
                 return cls.s3_client.generate_presigned_url(
                     s3_client_method.value,
                     Params=params,
                     ExpiresIn=expiration,
+                    HttpMethod='POST',
                 )
             except ClientError as ce:
                 raise S3ServiceException('Failed to generate signed URL', ce) 

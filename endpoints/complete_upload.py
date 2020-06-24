@@ -3,5 +3,5 @@ import cherrypy
 
 @cherrypy.expose
 class CompleteUploadAssetEndpoint:
-    def PUT(self, asset_id):
+    def PUT(self):
         return b'{"we": "bad"}'
