@@ -17,10 +17,7 @@ class UploadAssetEndpoint:
         with DatabaseAccessor.get_connection() as c:
             try:
                 with c.cursor() as cursor:
-                    signed_url = initiate_upload(json, cursor)
-                    return {
-                        'url': signed_url,
-                    }
+                    return initiate_upload(json, cursor)
             except UploadInvalidArgsException as ue:
                 logger.error(traceback.format_exc())
                 raise cherrypy.HTTPError(400, message=str(ue))

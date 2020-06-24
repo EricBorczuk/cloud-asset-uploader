@@ -44,13 +44,13 @@ def initiate_upload(upload_request, cursor):
     object_key = upload_request['object_key']
     expiration = upload_request.get('expiration')
 
-    existing_asset = AssetDao.get_by_bucket_and_key(
+    asset = AssetDao.get_by_bucket_and_key(
         DEFAULT_BUCKET,
         object_key,
         cursor,
     )
 
-    if not existing_asset:
+    if not asset:
         new_asset = AssetRow(
             id=None,
             uploaded_status=UploadedStatus.PENDING.value,
@@ -58,18 +58,24 @@ def initiate_upload(upload_request, cursor):
             object_key=object_key,
             create_date=datetime.utcnow(),
         )
-        AssetDao.insert_one(new_asset, cursor)
-    elif existing_asset.uploaded_status == UploadedStatus.COMPLETE.value:
-        raise UploadInvalidArgsException('Upload already complete.')
+        asset = AssetDao.insert_one(new_asset, cursor)
+    elif asset.uploaded_status == UploadedStatus.COMPLETE.value:
+        raise UploadInvalidArgsException('Upload already complete, try another object_key.')
 
     if expiration:
-        return S3Service.create_signed_url(
-            S3ClientMethod.PUT_OBJECT,
-            upload_request['object_key'],
-            expiration=expiration,
-        )
+        return {
+            'url': S3Service.create_signed_url(
+                       S3ClientMethod.PUT_OBJECT,
+                       upload_request['object_key'],
+                       expiration=expiration,
+                   ),
+            'asset_id': asset.id,
+        }
 
-    return S3Service.create_signed_url(
-        S3ClientMethod.PUT_OBJECT,
-        upload_request['object_key'],
-    )
+    return {
+        'url': S3Service.create_signed_url(
+                   S3ClientMethod.PUT_OBJECT,
+                   upload_request['object_key'],
+               ),
+        'asset_id': asset.id,
+    }
