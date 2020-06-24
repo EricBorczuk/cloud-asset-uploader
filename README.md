@@ -7,9 +7,13 @@ A server that allows a client to:
 
 # Getting Started
 
-The service runs with python 3.7. All of the instructions below assume that you have python 3.7 installed, and that running `python` in your shell refers to that install.
+The server runs with python 3.7. All of the instructions below assume that you have python 3.7 installed, and that running `python` in your shell refers to that install.
 
-The service also requires that you have PostgreSQL 10 installed. A simple way to get this install for Mac is to follow the steps at https://postgresapp.com/ (Choose the download option that reads `Postgres.app with PostgreSQL 10, 11 and 12`).
+The server also requires that you have aws credentials configured. On a local (i.e. not EC2) machine,
+this will mean that you need the AWS CLI installed, and that you have called `aws configure` to save your
+credentials. To install the CLI, please see https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html.
+
+Lastly, the server also requires that you have PostgreSQL 10 installed. A simple way to get this install for Mac is to follow the steps at https://postgresapp.com/ (Choose the download option that reads `Postgres.app with PostgreSQL 10, 11 and 12`).
 
 1) To get started, be sure to install pip (for python 3) by executing in a shell:
 ```
@@ -27,15 +31,17 @@ python get-pip.py
 
 5) Run `pip install -r requirements.txt`
 
-6) The server relies on env variables for your AWS credentials. Set your credentials:
-```
-export AWS_ACCESS_KEY_ID=???
-export AWS_SECRET_ACCESS_KEY=???
-```
+6) Connect to your local PostgreSQL instance and create a database (a one-liner, if your PostgreSQL instance lives at port 5432: `psql postgresql://localhost:5432 -c 'create database db'`). The rest of these instructions operate under the assumption that the database you created was called `db`, and was created at `localhost:5432`, but really you can call it whatever you'd like.
 
-7) The server also relies on an env variable for the connection string to your PostgreSQL instance. Set that up:
-`export POSTGRESQL_URL=???`
+7) The server uses yoyo to migrate the PostgreSQL database schema. To bootstrap the database schema, simply obtain the connection string (such as `postgresql://bob:@localhost:5432/db`) and run `yoyo apply --database <YOUR_CONNECTION_STRING_HERE> ./migrations` from the root directory of the repo.
 
-8) Run the server:
+7) The server relies on an env variable called `POSTGRESQL_LIBPQ_CONN_STR` for the connection string to your PostgreSQL instance. A sample connection string is below, replace the following command with the connection details to your PostgreSQL server:
+`export POSTGRESQL_LIBPQ_CONN_STR='host=localhost port=5432 dbname=db user=bob password='`
+
+8) Finally, to run the server, simply run:
 `python cloud_asset_server.py`
+
+# Testing Instructions
+
+There are no tests as of yet, will update this with testing instructions when they are complete!
 
