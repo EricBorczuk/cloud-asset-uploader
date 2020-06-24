@@ -47,13 +47,16 @@ class S3Service():
 
         if isinstance(s3_client_method, S3ClientMethod):
             try:
+                params = {
+                    'Bucket': bucket_name,
+                    'Key': object_key,
+                }
+                if s3_client_method == S3ClientMethod.PUT_OBJECT:
+                    params['ContentType'] = 'application/octet-stream'
+
                 return cls.s3_client.generate_presigned_url(
                     s3_client_method.value,
-                    Params={
-                        'Bucket': bucket_name,
-                        'Key': object_key,
-                        'ContentType': 'application/octet-stream',
-                    },
+                    Params=params,
                     ExpiresIn=expiration,
                 )
             except ClientError as ce:
