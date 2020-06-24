@@ -35,13 +35,12 @@ python get-pip.py
 
 7) The server uses yoyo to migrate the PostgreSQL database schema. To bootstrap the database schema, simply obtain the connection string (such as `postgresql://bob:@localhost:5432/db`) and run `yoyo apply --database <YOUR_CONNECTION_STRING_HERE> ./migrations` from the root directory of the repo.
 
-7) The server relies on an env variable called `POSTGRESQL_LIBPQ_CONN_STR` for the connection string to your PostgreSQL instance. A sample connection string is below, replace the following command with the connection details to your PostgreSQL server:
+8) The server relies on an env variable called `POSTGRESQL_LIBPQ_CONN_STR` for the connection string to your PostgreSQL instance. A sample connection string is below, replace the following command with the connection details to your PostgreSQL server:
 `export POSTGRESQL_LIBPQ_CONN_STR='host=localhost port=5432 dbname=db user=bob password='`
 
-8) Finally, to run the server, simply run:
+9) Finally, to run the server, simply run:
 `python cloud_asset_server.py`
 
 # Testing Instructions
 
-There are no tests as of yet, will update this with testing instructions when they are complete!
-
+1) pip install -r test_requirements.txt
