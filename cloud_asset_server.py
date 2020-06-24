@@ -1,7 +1,7 @@
 import cherrypy
 from database.database_accessor import DatabaseAccessor
 from endpoints.upload_asset import UploadAssetEndpoint
-from endpoints.complete_upload import CompleteUploadAssetEndpoint
+from endpoints.update_status import UpdateAssetStatusEndpoint
 from endpoints.access_asset import AccessAssetEndpoint
 
 class CloudAssetManagerServer:
@@ -14,7 +14,7 @@ if __name__ == '__main__':
             'tools.response_headers.on': True,
             'tools.response_headers.headers': [('Content-Type', 'application/json')],
         },
-        '/complete': {
+        '/status': {
             'request.dispatch': cherrypy.dispatch.MethodDispatcher(),
             'tools.response_headers.on': True,
             'tools.response_headers.headers': [('Content-Type', 'application/json')],
@@ -30,10 +30,10 @@ if __name__ == '__main__':
     try:
         # Three endpoints, defined here:
         # /api/upload
-        # /api/complete
+        # /api/status
         # /api/access
         service.upload = UploadAssetEndpoint()
-        service.complete = CompleteUploadAssetEndpoint()
+        service.status = UpdateAssetStatusEndpoint()
         service.access = AccessAssetEndpoint()
         cherrypy.quickstart(service, '/api', conf)
     finally:

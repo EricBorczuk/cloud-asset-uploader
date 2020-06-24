@@ -1,5 +1,10 @@
 from database.asset_dao import UploadedStatus, AssetDao
 
+
+"""
+"Public" functions that live here essentially map to endpoints 1:1.
+"""
+
 class ChangeUploadStatusInvalidArgsException(Exception):
     pass
 
@@ -23,7 +28,7 @@ def _check_valid_change_upload_status_request(request):
         raise ChangeUploadStatusInvalidArgsException(
             f'Invalid key: uploaded_status, Value: {uploaded_status} is not one of {[s.value for s in UploadedStatus]}')
     
-
+# resolving function for /api/status
 def change_asset_upload_status(request, cursor):
     """
     Updates a requested asset to have a new status.

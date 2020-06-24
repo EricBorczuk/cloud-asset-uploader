@@ -9,7 +9,7 @@ from external_services.s3_service import (
 from database.asset_dao import AssetDao, AssetRow, UploadedStatus
 
 """
-Functions that live here essentially map to endpoints 1:1.
+"Public" functions that live here essentially map to endpoints 1:1.
 """
 
 class UploadInvalidArgsException(Exception):
@@ -26,6 +26,7 @@ def _check_valid_upload_request(upload_request):
     if expiration is not None and not isinstance(expiration, int):
         raise UploadInvalidArgsException(f'Invalid key: expiration, Value: {expiration} is not an int')
 
+# resolving function for /api/upload
 def initiate_upload(upload_request, cursor):
     """
     Creates a signed URL for a put_object operation.
@@ -103,7 +104,7 @@ def _check_valid_access_request(access_request):
         except ValueError:
             raise AccessInvalidArgsException(f'Invalid key: expires_in, Value: {expiration} is not an int')
 
-
+# resolving function for /api/access
 def initiate_access(access_request, cursor):
     """
     Creates a signed URL for a get_object operation.

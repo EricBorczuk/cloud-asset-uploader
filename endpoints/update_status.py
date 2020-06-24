@@ -6,12 +6,12 @@ from methods.asset_methods import (
     change_asset_upload_status, ChangeUploadStatusInvalidArgsException, AssetNotFoundException
 )
 
-logger = logging.getLogger('complete_upload')
+logger = logging.getLogger('update_status')
 
 @cherrypy.expose
 @cherrypy.tools.json_out()
 @cherrypy.tools.json_in()
-class CompleteUploadAssetEndpoint:
+class UpdateAssetStatusEndpoint:
     def PUT(self):
         json = cherrypy.request.json
         with DatabaseAccessor.get_connection() as c:
