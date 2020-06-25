@@ -49,8 +49,9 @@ Assuming you are in an active virtual environment (See setup above):
 
 1) pip install -r test_requirements.txt
 
-2) Make sure you have a PostgreSQL database running on localhost:5432 (to check just type `psql` in your shell). This PostgreSQL instance will be used for integration tests.
+2) Make sure you have a PostgreSQL server running on localhost:5432 (to check just type `psql` in your shell). This PostgreSQL instance will be used for integration tests.
 
+Tests can be run in four ways:
 3a) To run only unit tests (starting from the root directory of the repo):
 ```
 cd test/unit
@@ -66,6 +67,11 @@ PYTHONPATH=../.. pytest
 3c) To run ALL tests (starting from the root directory of the repo):
 ```
 PYTHONPATH=. pytest
+```
+
+3d) Run a particular test file (starting from the root directory of the repo):
+```
+PYTHONPATH=. pytest <path/to/testfile.py>
 ```
 
 Enjoy!
