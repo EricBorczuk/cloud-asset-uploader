@@ -13,7 +13,13 @@ class ChangeAssetUploadStatusUnitTest(unittest.TestCase):
     @patch.object(AssetDao, 'update_uploaded_status')
     @patch.object(AssetDao, 'get_by_id')
     def test_happy_path(self, get_by_id_mock, update_uploaded_status_mock):
-        json = {
+        """
+        Given:
+            The requested asset exists in the database
+        Then:
+            The asset's uploaded_status is successfully updated
+        """
+        data = {
             'asset_id': 1,
             'uploaded_status': UploadedStatus.COMPLETE.value
         }
@@ -26,7 +32,7 @@ class ChangeAssetUploadStatusUnitTest(unittest.TestCase):
             create_date=datetime.utcnow()
         )
 
-        result = change_asset_upload_status(json, self.mock_cursor)
+        result = change_asset_upload_status(data, self.mock_cursor)
         get_by_id_mock.assert_called_once_with(
             1, self.mock_cursor
         )
@@ -40,41 +46,47 @@ class ChangeAssetUploadStatusUnitTest(unittest.TestCase):
         })
     
     def test_invalid_request(self):
-        json = {
+        """
+        Given:
+            The request is missing keys, or the values have invalid types
+        Then:
+            An applicable error is thrown
+        """
+        data = {
             'uploaded_status': UploadedStatus.COMPLETE.value,
         }
 
         with self.assertRaises(ChangeUploadStatusInvalidArgsException) as ctx:
-            change_asset_upload_status(json, self.mock_cursor)
+            change_asset_upload_status(data, self.mock_cursor)
         self.assertEqual(str(ctx.exception), 'Missing key: asset_id')
 
-        json = {
+        data = {
             'asset_id': 1,
         }
 
         with self.assertRaises(ChangeUploadStatusInvalidArgsException) as ctx:
-            change_asset_upload_status(json, self.mock_cursor)
+            change_asset_upload_status(data, self.mock_cursor)
         self.assertEqual(str(ctx.exception), 'Missing key: uploaded_status')
 
-        json = {
+        data = {
             'asset_id': 'some string?',
             'uploaded_status': UploadedStatus.COMPLETE.value,
         }
 
         with self.assertRaises(ChangeUploadStatusInvalidArgsException) as ctx:
-            change_asset_upload_status(json, self.mock_cursor)
+            change_asset_upload_status(data, self.mock_cursor)
         self.assertEqual(
             str(ctx.exception),
             'Invalid key: asset_id, Value: some string? is not an int'
         )
 
-        json = {
+        data = {
             'asset_id': 1,
             'uploaded_status': 'hello',
         }
 
         with self.assertRaises(ChangeUploadStatusInvalidArgsException) as ctx:
-            change_asset_upload_status(json, self.mock_cursor)
+            change_asset_upload_status(data, self.mock_cursor)
         self.assertEqual(
             str(ctx.exception),
             "Invalid key: uploaded_status, Value: hello is not one of ['pending', 'complete']"
@@ -82,13 +94,19 @@ class ChangeAssetUploadStatusUnitTest(unittest.TestCase):
     
     @patch.object(AssetDao, 'get_by_id')
     def test_invalid_asset_id(self, get_by_id_mock):
+        """
+        Given:
+            The requested asset does not exist in the database
+        Then:
+            An applicable error is thrown
+        """
         get_by_id_mock.return_value = None
 
-        json = {
+        data = {
             'asset_id': 1,
             'uploaded_status': UploadedStatus.COMPLETE.value,
         }
 
         with self.assertRaises(AssetNotFoundException) as ctx:
-            change_asset_upload_status(json, self.mock_cursor)
+            change_asset_upload_status(data, self.mock_cursor)
         self.assertEqual(str(ctx.exception), 'Asset with id 1 not found')
