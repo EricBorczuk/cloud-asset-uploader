@@ -72,5 +72,5 @@ class S3Service():
             except ClientError as ce:
                 raise S3ServiceException('Failed to generate signed URL', ce) 
         
-        raise S3ServiceException(f'Unrecognized or unsupported S3 Method: {str(s3_client_method)}')
+        raise S3ServiceInvalidArgsException(f'Unrecognized or unsupported S3 Method: {str(s3_client_method)}')
             
