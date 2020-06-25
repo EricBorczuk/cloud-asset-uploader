@@ -13,7 +13,7 @@ The server also requires that you have AWS credentials configured. On a local (i
 this will mean that you need the AWS CLI installed, and that you have called `aws configure` to save your
 credentials. To install the CLI, please see https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html.
 
-In addition, the server requires that you have a bucket in S3 called `uploads`.
+In addition, the server requires that you have a bucket in S3 that has read/write access configured for your configured user.
 
 Lastly, the server also requires that you have PostgreSQL 10 installed, and `psql`. A simple way to get this install for Mac is to follow the steps at https://postgresapp.com/ (Choose the download option that reads `Postgres.app with PostgreSQL 10, 11 and 12`).
 
@@ -42,7 +42,10 @@ python get-pip.py
 8) The server relies on an env variable called `POSTGRESQL_LIBPQ_CONN_STR` for the connection string to your PostgreSQL instance. A sample connection string is below, replace the following command with the connection details to your PostgreSQL server:
 `export POSTGRESQL_LIBPQ_CONN_STR='host=localhost port=5432 dbname=db user=bob password=security'`
 
-9) Finally, to run the server, simply run:
+9) The server needs to know what the name of your s3 bucket is.
+`export S3_BUCKET_NAME=<your_s3_bucket_name>`
+
+10) Finally, to run the server, simply run:
 `python cloud_asset_server.py`
 
 # Testing Instructions

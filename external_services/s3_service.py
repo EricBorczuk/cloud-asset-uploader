@@ -1,3 +1,4 @@
+import os
 from enum import Enum
 import boto3
 from botocore.exceptions import ClientError
@@ -15,7 +16,7 @@ class S3ServiceInvalidArgsException(Exception):
 
 DEFAULT_EXPIRATION = 60 # 1 minute
 MAX_EXPIRATION_TIME = 60 * 30 # 30 minutes
-DEFAULT_BUCKET = 'uploads'
+DEFAULT_BUCKET = os.getenv('S3_BUCKET_NAME')
 
 class S3Service():
     s3_client = boto3.client('s3')
