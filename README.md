@@ -1,9 +1,9 @@
 # Cloud Asset Uploader
 
 A server that allows a client to:
-1) Generate a signed URL for uploading an asset securely to Amazon S3.
-2) Allow marking an upload's status (i.e. mark an asset as `complete`)
-3) Generate a signed URL for getting a `complete` asset from S3.
+1) Generate a signed URL for uploading an asset securely to Amazon S3. (POST `/api/upload`)
+2) Allow marking an upload's status (i.e. mark an asset as `complete`) (PUT `/api/status`)
+3) Generate a signed URL for getting a `complete` asset from S3. (GET `/api/access`)
 
 # Prerequisites
 
