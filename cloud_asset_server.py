@@ -28,10 +28,11 @@ CHERRY_TREE_CONFIG = {
     }
 }
 
-def setup_cherry_tree():
+def setup_cherry_tree(port=8080):
     # Don't show traceback as HTML to the client on error
     # Run as if we're in production (so no 'debug' mode)
     cherrypy.config.update({
+        'server.socket_port': port,
         'environment': 'production',
         'log.screen': False,
         'show_tracebacks': False,

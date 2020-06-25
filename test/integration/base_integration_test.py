@@ -12,8 +12,8 @@ from external_services.s3_service import S3Service
 class BaseIntegrationTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cherrypy.tree.mount(setup_cherry_tree(), '/api', CHERRY_TREE_CONFIG)
-    
+        cherrypy.tree.mount(setup_cherry_tree(port=10000), '/api', CHERRY_TREE_CONFIG)
+
     # This is run before each test case and is _incredibly_ slow.
     # There are quite a few ways to make this faster, just for the
     # scale/number of tests I have, I felt it was premature to optimize.
@@ -35,7 +35,7 @@ class BaseIntegrationTest(unittest.TestCase):
         self._set_up_database_schema()
         DatabaseAccessor.connect(testing=True)
 
-        self.api_url = 'http://localhost:8080/api'
+        self.api_url = 'http://localhost:10000/api'
         self.headers = {
             'content-type': 'application/json',
         }
