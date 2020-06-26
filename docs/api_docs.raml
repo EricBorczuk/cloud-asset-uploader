@@ -1,9 +1,9 @@
 #%RAML 1.0
 ---
 title: Cloud Asset Uploader
-baseUri: http://localhost:8080/
+baseUri: http://localhost:8080
 
-/upload:
+/api/upload:
   displayName: Request Signed Upload URL
   post:
     description: Request an upload via an S3 signed URL.
@@ -40,7 +40,7 @@ baseUri: http://localhost:8080/
                 },
                 "asset_id": 1
               }
-/status:
+/api/status:
   displayName: Update Asset Status
   put:
     description: Updates the status of a provided asset.
@@ -69,7 +69,7 @@ baseUri: http://localhost:8080/
                 "success": true,
                 "uploaded_status": "complete"
               }
-/access:
+/api/access:
   displayName: Request Signed Download URL
   get:
     description: Request a signed URL to access an asset. The asset must have an uploaded_status of 'complete'.
