@@ -1,0 +1,94 @@
+#%RAML 1.0
+---
+title: Cloud Asset Uploader
+baseUri: http://localhost:8080/
+
+/upload:
+  displayName: Request Signed Upload URL
+  post:
+    description: Request an upload via an S3 signed URL.
+    body:
+      application/json:
+        properties:
+          object_key:
+            description: The name of the file to be uploaded to S3
+            required: true
+            type: string
+          expires_in:
+            description: The amount of time (in seconds) that the signed URL will remain valid. Defaults to 60 seconds.
+            required: false
+            type: number
+        example: |
+          {
+            "object_key": "my_cool_file.jpg",
+            "expires_in": 600
+          }
+    responses:
+      200:
+        body:
+          application/json:
+            example: |
+              {
+                "signed_info": {
+                  "url": "https://ericborczuk.s3.amazonaws.com/",
+                  "fields": {
+                    "key": "ABCDEF.txt",
+                    "AWSAccessKeyId": "XXXXXXXXXXXXXXXX",
+                    "policy": "SOME_LONG_POLICY",
+                    "signature": "SOME_SIGNATURE"
+                  }
+                },
+                "asset_id": 1
+              }
+/status:
+  displayName: Update Asset Status
+  put:
+    description: Updates the status of a provided asset.
+    body:
+      application/json:
+        properties:
+          asset_id:
+            description: The ID of the asset to update.
+            required: true
+            type: number
+          uploaded_status:
+            description: The status to update. Valid values (pending|complete)
+            required: true
+            type: string
+        example: |
+          {
+            "asset_id": 1,
+            "uploaded_status": "complete"
+          }
+    responses:
+      200:
+        body:
+          application/json:
+            example: |
+              {
+                "success": true,
+                "uploaded_status": "complete"
+              }
+/access:
+  displayName: Request Signed Download URL
+  get:
+    description: Request a signed URL to access an asset. The asset must have an uploaded_status of 'complete'.
+    queryParameters:
+      asset_id:
+        description: The ID of the asset you want access to.
+        required: true
+        type: number
+      expires_in:
+        description: The amount of time (in seconds) that the signed URL will remain valid. Defaults to 60 seconds.
+        required: false
+        type: number
+    responses:
+      200:
+        body:
+          application/json:
+            example: |
+              {
+                "url": "https://fancy.url.com",
+                "asset_id": 1
+              }
+                

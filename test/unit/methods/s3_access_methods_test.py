@@ -119,7 +119,7 @@ class InitiateUploadUnitTest(unittest.TestCase):
 
         upload_request = {
             'object_key': 'important_secrets.txt',
-            'expiration': 30 # seconds
+            'expires_in': 30 # seconds
         }
 
         result = initiate_upload(upload_request, self.mock_cursor)
@@ -158,12 +158,12 @@ class InitiateUploadUnitTest(unittest.TestCase):
 
         data = {
             'object_key': 'sick_name.txt',
-            'expiration': 'mamajama'
+            'expires_in': 'mamajama'
         }
 
         with self.assertRaises(UploadInvalidArgsException) as ctx:
             initiate_upload(data, self.mock_cursor)
-        self.assertEqual(str(ctx.exception), 'Invalid key: expiration, Value: mamajama is not an int')
+        self.assertEqual(str(ctx.exception), 'Invalid key: expires_in, Value: mamajama is not an int')
     
     @patch.object(AssetDao, 'get_by_bucket_and_key')
     def test_completed_asset_invalid(self, bucket_and_key_mock):
