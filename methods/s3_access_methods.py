@@ -17,14 +17,14 @@ class UploadInvalidArgsException(Exception):
 
 def _check_valid_upload_request(upload_request):
     object_key = upload_request.get('object_key', None)
-    expiration = upload_request.get('expiration', None)
+    expiration = upload_request.get('expires_in', None)
 
     if object_key is None:
         raise UploadInvalidArgsException('Missing key: object_key')
     if not isinstance(object_key, str):
         raise UploadInvalidArgsException(f'Invalid key: object_key, Value: {object_key} is not a string')
     if expiration is not None and not isinstance(expiration, int):
-        raise UploadInvalidArgsException(f'Invalid key: expiration, Value: {expiration} is not an int')
+        raise UploadInvalidArgsException(f'Invalid key: expires_in, Value: {expiration} is not an int')
 
 # resolving function for /api/upload
 def initiate_upload(upload_request, cursor):
@@ -37,13 +37,13 @@ def initiate_upload(upload_request, cursor):
     If the combination of bucket and key already exist in the database, an error
     is raised and no action is taken.
 
-    :param upload_request: a dict with keys `object_key` and `expiration`, denoting
+    :param upload_request: a dict with keys `object_key` and `expires_in`, denoting
     the asset's name and the amount of time, in seconds, that the signed URL should last.
     """
 
     _check_valid_upload_request(upload_request)
     object_key = upload_request['object_key']
-    expiration = upload_request.get('expiration')
+    expiration = upload_request.get('expires_in')
 
     asset = AssetDao.get_by_bucket_and_key(
         DEFAULT_BUCKET,

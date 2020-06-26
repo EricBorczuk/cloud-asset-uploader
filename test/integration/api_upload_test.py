@@ -55,7 +55,7 @@ class ApiUploadIntegrationTest(BaseIntegrationTest):
             response = self.request(
                 'post',
                 '/upload',
-                data=json.dumps({ 'object_key': 'abc' }),
+                data=json.dumps({ 'object_key': 'abc', 'expires_in': 50 }),
             )
 
             dict_data = json.loads(response.content)

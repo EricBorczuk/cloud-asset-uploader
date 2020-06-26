@@ -48,6 +48,10 @@ python get-pip.py
 10) Finally, to run the server, simply run:
 `python cloud_asset_server.py`
 
+# View API Docs
+
+To view API documentation, simply open `docs/api_docs.html` in a browser.
+
 # Testing Instructions
 
 Assuming you are in an active virtual environment (See setup above):
